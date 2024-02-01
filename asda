@@ -1,0 +1,203 @@
+import React, { useEffect, useState } from 'react';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { AppBar, Container, Toolbar, Grid } from "@mui/material";
+
+const Main = () => {
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [color, setColor] = useState('Green')
+  const [ancho, setAncho] = useState('100px');
+  const [alto, setAlto] = useState('100px');
+
+  const moveSphere = (direction, pixeles) => {
+    switch (direction) {
+      case 'UP':
+        setPosition({ ...position, top: position.top - pixeles });
+        console.log("arriba");
+        break;
+      case 'DOWN':
+        setPosition({ ...position, top: position.top + pixeles });
+        console.log("abajo");
+        break;
+      case 'LEFT':
+        setPosition({ ...position, left: position.left - pixeles });
+        console.log("izquierda");
+        break;
+      case 'RIGHT':
+        setPosition({ ...position, left: position.left + pixeles });
+        console.log("derecha");
+        break;
+      default:
+        break;
+    }
+  };
+
+  const commands = [
+    {
+      command: 'Cyan.',
+      callback: () => {
+        setColor('cyan')
+        console.log("cyan")
+      }
+    },
+    {
+      command: 'Aqua.',
+      callback: () => {
+        setColor('aqua')
+        console.log("aqua")
+      }
+    },
+    {
+      command: 'Purple.',
+      callback: () => {
+        setColor('purple')
+        console.log("purple")
+      }
+    },
+    {
+      command: 'Blue.',
+      callback: () => {
+        setColor('blue')
+        console.log("blue")
+      }
+    },
+    {
+      command: 'Invisible.',
+      callback: () => {
+        setColor('white')
+        console.log("invisible")
+      }
+    },
+    {
+      command: 'Big.',
+      callback: () => {
+        setAncho('200px')
+        setAlto('200px');
+        console.log("grande")
+      }
+    },
+    {
+      command: 'Small.',
+      callback: () => {
+        setAncho('50px')
+        setAlto('50px');
+        console.log("pequeño")
+      }
+    },
+    {
+      command: 'Medium.',
+      callback: () => {
+        setAncho('100px')
+        setAlto('100px');
+        console.log("mediano")
+      }
+    },
+    {
+      command: 'Reset.',
+      callback: () => {
+        setPosition({ top: 0, left: 0 });
+        setColor('green');
+        setAncho('100px');
+        setAlto('100px');
+        console.log("reset")
+      }
+    },
+    {
+      command: 'Enlarge.',
+      callback: () => {
+        setAncho('150px');
+        setAlto('150px');
+        console.log("ensanchar")
+      }
+    },
+    {
+      command: 'Shrink.',
+      callback: () => {
+        setAncho('75px');
+        setAlto('75px');
+        console.log("menguar")
+      }
+    },
+    {
+      command: 'Move up.',
+      callback: () => {
+        moveSphere('UP', 30);
+        console.log("pa arriba")
+      }
+    },
+    {
+      command: 'Move down.',
+      callback: () => {
+        moveSphere('DOWN', 30);
+        console.log("pa abajo")
+      }
+    },
+    {
+      command: 'Move left.',
+      callback: () => {
+        moveSphere('LEFT', 30);
+        console.log("izquierda")
+      }
+    },
+    {
+      command: 'Move right.',
+      callback: () => {
+        moveSphere('RIGHT', 30);
+        console.log("derecha")
+      }
+    },
+  ];
+
+  const { transcript, browserSupportsSpeechRecognition } = useSpeechRecognition({ commands });
+
+  useEffect(() => {
+    if (transcript && transcript.toLowerCase().includes('rick')) {
+      window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley", "_blank");
+    }
+  }, [transcript]);
+
+  if (!browserSupportsSpeechRecognition) {
+    return null;
+  }
+
+  return (
+    <>
+      <div>
+        <AppBar position="static">
+          <Container maxWidth="xl">
+            <Toolbar>
+              <Grid container justifyContent="space-between" alignItems="center">
+                <Grid item xs={8} md={8} lg={8}>
+                </Grid>
+                <Grid item xs={4} md={4} lg={4}>
+                  <h3 style={{ textAlign: 'right' }}>El proyecto del nene</h3>
+                </Grid>
+                <Grid item xs={12} md={4} lg={12}>
+                  <button onClick={() => SpeechRecognition.startListening({ continuous: true })}>Start</button>
+                </Grid>
+                <Grid item xs={12} md={4} lg={4}>
+                  <button onClick={SpeechRecognition.stopListening}>Stop</button>
+                </Grid>
+              </Grid>
+            </Toolbar>
+          </Container>
+        </AppBar>
+      </div>
+
+      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+        <div
+          style={{
+            width: ancho,
+            height: alto,
+            backgroundColor: color,
+            borderRadius: '50%',
+            position: 'relative',
+            top: `${position.top}px`,
+            left: `${position.left}px`,
+          }}
+        />
+      </div>
+    </>
+  );
+};
+
+export default Main;
